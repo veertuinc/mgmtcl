@@ -79,17 +79,18 @@ def list_vms():
 @click.argument('template-id', type=click.STRING)
 @click.option('--tag', type=click.STRING, default=None)
 @click.option('--count', type=click.INT, default=1)
-def start_vm(template_id, tag, count):
+@click.option('--node', type=click.STRING, default=None)
+def start_vm(template_id, tag, count, node):
     from management_api import ManagementApi
     from management_api import NotFoundException
     mgmt_api = ManagementApi(host)
     new_ids = None
     try:
-        new_ids = mgmt_api.start_vm(template_id, count, tag=tag)
+        new_ids = mgmt_api.start_vm(template_id, count, tag=tag, node=node)
     except NotFoundException:
         template_id_from_list = mgmt_api.search_template_by_name(template_id)
         if template_id_from_list:
-            new_ids = mgmt_api.start_vm(template_id_from_list, count)
+            new_ids = mgmt_api.start_vm(template_id_from_list, count, tag=tag, node=node)
         else:
             click.echo("Template not found")
             exit(-1)

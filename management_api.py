@@ -56,11 +56,13 @@ class ManagementApi(object):
                     vms_list_to_return.append(vm_dict)
         return vms_list_to_return
 
-    def start_vm(self, vm_id, count, tag=None):
+    def start_vm(self, vm_id, count, tag=None, node=None):
         url = "%s/%s" % (self.base_url, self.vm_resource)
         args = {"vmid": vm_id, "count": count}
         if tag:
             args['tag'] = tag
+        if node:
+            args['node_id'] = node
         response = requests.post(url, json=args)
         response.raise_for_status()
         response_dict = json.loads(response.content)
