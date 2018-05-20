@@ -22,6 +22,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 # THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import base64
 import json
 from collections import OrderedDict
 
@@ -56,13 +57,19 @@ class ManagementApi(object):
                     vms_list_to_return.append(vm_dict)
         return vms_list_to_return
 
-    def start_vm(self, vm_id, count, tag=None, node=None):
+    def start_vm(self, vm_id, count, tag=None, node=None, name=None, script_file=None):
         url = "%s/%s" % (self.base_url, self.vm_resource)
         args = {"vmid": vm_id, "count": count}
         if tag:
             args['tag'] = tag
         if node:
             args['node_id'] = node
+        if name:
+            args['name_template'] = name
+        if script_file:
+            with open(script_file, "rb") as f:
+                args['startup_script'] = base64.b64encode(f.read()).decode()
+                f.close()
         response = requests.post(url, json=args)
         response.raise_for_status()
         response_dict = json.loads(response.content)

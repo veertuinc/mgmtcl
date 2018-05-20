@@ -80,17 +80,22 @@ def list_vms():
 @click.option('--tag', type=click.STRING, default=None)
 @click.option('--count', type=click.INT, default=1)
 @click.option('--node', type=click.STRING, default=None)
-def start_vm(template_id, tag, count, node):
+@click.option('--name', type=click.STRING, default=None)
+@click.option('--script-file', type=click.STRING, default=None)
+def start_vm(template_id, tag, count, node, name, script_file):
     from management_api import ManagementApi
     from management_api import NotFoundException
     mgmt_api = ManagementApi(host)
     new_ids = None
     try:
-        new_ids = mgmt_api.start_vm(template_id, count, tag=tag, node=node)
+        if script_file != None and not os.path.exists(script_file):
+            click.echo("File %s does not exist" % script_file)
+            exit(-1)
+        new_ids = mgmt_api.start_vm(template_id, count, tag=tag, node=node, name=name, script_file=script_file)
     except NotFoundException:
         template_id_from_list = mgmt_api.search_template_by_name(template_id)
         if template_id_from_list:
-            new_ids = mgmt_api.start_vm(template_id_from_list, count, tag=tag, node=node)
+            new_ids = mgmt_api.start_vm(template_id_from_list, count, tag=tag, node=node, name=name)
         else:
             click.echo("Template not found")
             exit(-1)

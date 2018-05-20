@@ -55,7 +55,7 @@ class Formatter(object):
                 dict_of_sub_lists[key] += new_list
             clean_list_of_dicts.append(d)
         output += self.format_list_of_dicts(clean_list_of_dicts)
-        for k, v in dict_of_sub_lists.iteritems():
+        for k, v in dict_of_sub_lists.items():
             if v:
                 output += "\n\n" + k + "\n\n"
                 output += self.format_list_of_dicts(v)
@@ -64,7 +64,7 @@ class Formatter(object):
 
     def _has_list(self, dict_collection):
         list_keys = []
-        for k, val in dict_collection[0].iteritems():
+        for k, val in dict_collection[0].items():
             if isinstance(val, list):
                 list_keys.append(k)
         return list_keys
@@ -73,7 +73,7 @@ class Formatter(object):
         output = ''
         data = []
         additionals = {}
-        for k, v in dict_to_output.iteritems():
+        for k, v in dict_to_output.items():
             if isinstance(v, (basestring, Number)):
                 data.append((k, v))
             elif isinstance(v, (dict, OrderedDict)):
@@ -85,7 +85,7 @@ class Formatter(object):
                     data.append((k, ', '.join(v)))
         output += tabulate(data, tablefmt='grid')
         output += '\n\n'
-        for k, v in additionals.iteritems():
+        for k, v in additionals.items():
             output += k + "\n\n"
             if isinstance(v, dict):
                 output += self.format_dict(v)
